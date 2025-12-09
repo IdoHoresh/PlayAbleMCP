@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DragHandler : MonoBehaviour
 {
@@ -27,15 +28,15 @@ public class DragHandler : MonoBehaviour
 
     private void HandleMouseInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             TryPickUpItem();
         }
-        else if (Input.GetMouseButton(0) && draggedItem != null)
+        else if (Mouse.current != null && Mouse.current.leftButton.isPressed && draggedItem != null)
         {
             DragItem();
         }
-        else if (Input.GetMouseButtonUp(0) && draggedItem != null)
+        else if (Mouse.current != null && Mouse.current.leftButton.wasReleasedThisFrame && draggedItem != null)
         {
             TryPlaceItem();
         }
@@ -43,7 +44,7 @@ public class DragHandler : MonoBehaviour
 
     private void TryPickUpItem()
     {
-        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero, Mathf.Infinity, itemLayerMask);
 
         if (hit.collider != null)
@@ -60,13 +61,20 @@ public class DragHandler : MonoBehaviour
     {
         draggedItem = item;
         originalGridPosition = item.GetGridPosition();
-        
+
         Vector3 mouseWorldPos = GetMouseWorldPosition();
         dragOffset = draggedItem.transform.position - mouseWorldPos;
-        
+
         // Remove from grid temporarily
         gridManager.RemoveItem(originalGridPosition);
-        
+
+        // Apply pickup visual effect
+        ItemVisualEffects effects = draggedItem.GetComponent<ItemVisualEffects>();
+        if (effects != null)
+        {
+            effects.OnPickup();
+        }
+
         Debug.Log($"Started dragging {item.itemData.itemName} from {originalGridPosition}");
     }
 
@@ -77,26 +85,26 @@ public class DragHandler : MonoBehaviour
         draggedItem.transform.position = newPosition;
 
         // Show visual feedback on grid
-        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2Int targetGridPos = gridManager.WorldToGridPosition(mousePos);
-        
+
         gridManager.ResetAllCellVisuals();
-        
+
         if (gridManager.IsValidGridPosition(targetGridPos))
         {
             GridCell targetCell = gridManager.GetCell(targetGridPos);
             MergeableItem targetItem = targetCell.GetItem();
-            
+
             bool canMerge = targetItem != null && draggedItem.CanMergeWith(targetItem);
             bool canPlace = targetItem == null;
-            
+
             gridManager.HighlightCell(targetGridPos, canMerge || canPlace);
         }
     }
 
     private void TryPlaceItem()
     {
-        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         Vector2Int targetGridPos = gridManager.WorldToGridPosition(mousePos);
 
         bool placed = false;
@@ -122,6 +130,14 @@ public class DragHandler : MonoBehaviour
                     draggedItem.transform.position.y,
                     0f
                 );
+
+                // Apply place visual effect
+                ItemVisualEffects effects = draggedItem.GetComponent<ItemVisualEffects>();
+                if (effects != null)
+                {
+                    effects.OnPlace();
+                }
+
                 placed = true;
                 Debug.Log($"Placed item at {targetGridPos}");
             }
@@ -136,6 +152,14 @@ public class DragHandler : MonoBehaviour
                 draggedItem.transform.position.y,
                 0f
             );
+
+            // Apply place visual effect
+            ItemVisualEffects effects = draggedItem.GetComponent<ItemVisualEffects>();
+            if (effects != null)
+            {
+                effects.OnPlace();
+            }
+
             Debug.Log($"Returned item to {originalGridPosition}");
         }
 
@@ -145,7 +169,7 @@ public class DragHandler : MonoBehaviour
 
     private Vector3 GetMouseWorldPosition()
     {
-        Vector3 mousePos = Input.mousePosition;
+        Vector3 mousePos = Mouse.current.position.ReadValue();
         mousePos.z = Mathf.Abs(mainCamera.transform.position.z);
         return mainCamera.ScreenToWorldPoint(mousePos);
     }

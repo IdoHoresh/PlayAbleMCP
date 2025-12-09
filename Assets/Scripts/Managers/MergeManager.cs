@@ -57,6 +57,13 @@ public class MergeManager : MonoBehaviour
         {
             item.Initialize(itemData);
             gridManager.PlaceItem(item, gridPosition);
+
+            // Play spawn effect
+            ItemVisualEffects effects = item.GetComponent<ItemVisualEffects>();
+            if (effects != null)
+            {
+                effects.PlaySpawnEffect();
+            }
         }
 
         return item;
