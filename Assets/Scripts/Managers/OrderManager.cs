@@ -13,25 +13,45 @@ public class OrderManager : MonoBehaviour
     public OrderData[] availableOrders;
 
     private List<OrderData> activeOrders = new List<OrderData>();
+    private bool initialized = false;
 
     private void Start()
     {
-        InitializeOrders();
+        // Wait one frame to ensure UISetup has completed
+        Invoke(nameof(InitializeOrders), 0.1f);
     }
 
     private void InitializeOrders()
     {
+        if (initialized) return;
+
+        // Check if everything is ready
+        if (orderSlots == null || orderSlots.Length == 0)
+        {
+            Debug.LogWarning("OrderManager: Order slots not set up yet!");
+            return;
+        }
+
+        if (availableOrders == null || availableOrders.Length == 0)
+        {
+            Debug.LogWarning("OrderManager: No orders available!");
+            return;
+        }
+
         // Create initial orders
         for (int i = 0; i < Mathf.Min(orderSlots.Length, availableOrders.Length); i++)
         {
-            if (availableOrders[i] != null)
+            if (availableOrders[i] != null && orderSlots[i] != null)
             {
                 activeOrders.Add(availableOrders[i]);
                 orderSlots[i].SetOrder(availableOrders[i]);
+                Debug.Log($"OrderManager: Set order {i}: {availableOrders[i].name}");
             }
         }
 
+        initialized = true;
         CheckOrderAvailability();
+        Debug.Log($"OrderManager: Initialized with {activeOrders.Count} orders");
     }
 
     public void OnItemMerged(ItemData mergedItem)

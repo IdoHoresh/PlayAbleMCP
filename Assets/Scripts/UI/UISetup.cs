@@ -69,17 +69,18 @@ public class UISetup : MonoBehaviour
         panelRect.anchorMin = new Vector2(0.5f, 1f);
         panelRect.anchorMax = new Vector2(0.5f, 1f);
         panelRect.pivot = new Vector2(0.5f, 1f);
-        panelRect.anchoredPosition = new Vector2(0, -20);
-        panelRect.sizeDelta = new Vector2(1000, 180);
+        panelRect.anchoredPosition = new Vector2(0, -50);
+        panelRect.sizeDelta = new Vector2(950, 160);
 
         Image panelBg = panel.AddComponent<Image>();
-        panelBg.color = new Color(1f, 1f, 1f, 0.1f);
+        panelBg.color = new Color(1f, 1f, 1f, 0.05f);
 
-        // Create 3 order slots
+        // Create 3 order slots with better spacing
         orderSlots = new OrderSlot[3];
-        float slotWidth = 300f;
-        float spacing = 20f;
-        float startX = -(slotWidth * 1.5f + spacing);
+        float slotWidth = 280f;
+        float spacing = 25f;
+        float totalWidth = slotWidth * 3 + spacing * 2;
+        float startX = -totalWidth / 2f + slotWidth / 2f;
 
         for (int i = 0; i < 3; i++)
         {
