@@ -158,6 +158,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 35491a5724793ed4ebf2b8cb4e6679e8, type: 2}
   - {fileID: 11400000, guid: a1b2c3d4e5f6789012345678abcdef01, type: 2}
   - {fileID: 11400000, guid: e2a1b3c4d5f6789012345678abcdef02, type: 2}
+  - {fileID: 11400000, guid: b4c5d6e7f8a9012345678901abcdef04, type: 2}
+  - {fileID: 11400000, guid: c5d6e7f8a9b0123456789abcdef02345, type: 2}
   spawnTestItems: 1
 --- !u!114 &39096255
 MonoBehaviour:

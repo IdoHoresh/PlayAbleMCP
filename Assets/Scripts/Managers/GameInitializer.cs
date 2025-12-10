@@ -22,7 +22,7 @@ public class GameInitializer : MonoBehaviour
 
     private void SpawnInitialItems()
     {
-        // Spawn gems and energy items on the grid
+        // Spawn gems, energy, and piñata items on the grid
 
         // Gem Level 1 - two items for merging
         if (testItems.Length > 0 && testItems[0] != null)
@@ -50,6 +50,19 @@ public class GameInitializer : MonoBehaviour
             mergeManager.CreateItemAtPosition(testItems[3], new Vector2Int(2, 1));
         }
 
-        Debug.Log("Initial items spawned: Gems and Energy");
+        // Pinata Level 1 - two items for merging
+        if (testItems.Length > 4 && testItems[4] != null)
+        {
+            mergeManager.CreateItemAtPosition(testItems[4], new Vector2Int(0, 2));
+            mergeManager.CreateItemAtPosition(testItems[4], new Vector2Int(1, 2));
+        }
+
+        // Pinata Level 2
+        if (testItems.Length > 5 && testItems[5] != null)
+        {
+            mergeManager.CreateItemAtPosition(testItems[5], new Vector2Int(2, 2));
+        }
+
+        Debug.Log("Initial items spawned: Gems, Energy, and Piñatas");
     }
 }
