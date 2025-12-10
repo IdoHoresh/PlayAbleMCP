@@ -3,6 +3,7 @@
 public class MergeManager : MonoBehaviour
 {
     private GridManager gridManager;
+    private OrderManager orderManager;
 
     [Header("Prefabs")]
     public GameObject mergeableItemPrefab;
@@ -10,6 +11,7 @@ public class MergeManager : MonoBehaviour
     private void Awake()
     {
         gridManager = FindFirstObjectByType<GridManager>();
+        orderManager = FindFirstObjectByType<OrderManager>();
     }
 
     public void MergeItems(MergeableItem item1, MergeableItem item2, Vector2Int mergePosition)
@@ -37,6 +39,12 @@ public class MergeManager : MonoBehaviour
 
         // Create new merged item
         CreateItemAtPosition(resultData, mergePosition);
+
+        // Notify order manager
+        if (orderManager != null)
+        {
+            orderManager.OnItemMerged(resultData);
+        }
 
         Debug.Log($"Merged into {resultData.itemName} at {mergePosition}");
     }
