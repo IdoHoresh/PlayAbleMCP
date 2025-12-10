@@ -156,6 +156,8 @@ MonoBehaviour:
   testItems:
   - {fileID: 11400000, guid: 779a227da9a3c1648be5e37f83fc8df3, type: 2}
   - {fileID: 11400000, guid: 35491a5724793ed4ebf2b8cb4e6679e8, type: 2}
+  - {fileID: 11400000, guid: a1b2c3d4e5f6789012345678abcdef01, type: 2}
+  - {fileID: 11400000, guid: e2a1b3c4d5f6789012345678abcdef02, type: 2}
   spawnTestItems: 1
 --- !u!114 &39096255
 MonoBehaviour:
@@ -200,7 +202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridWidth: 5
   gridHeight: 6
-  cellSize: 1.25
+  cellSize: 1.05
   cellPrefab: {fileID: 7901485657203549882, guid: 97891720f85d37f439a77f6af69f900c, type: 3}
   gridOffset: {x: 0, y: 0}
 --- !u!4 &39096258
