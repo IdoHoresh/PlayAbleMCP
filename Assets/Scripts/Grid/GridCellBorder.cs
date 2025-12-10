@@ -6,9 +6,10 @@ public class GridCellBorder : MonoBehaviour
     private LineRenderer lineRenderer;
     
     [Header("Border Settings")]
-    public Color borderColor = new Color(1f, 1f, 1f, 0.5f);
+    public Color borderColor = new Color(1f, 1f, 1f, 0f); // Transparent - no border
     public float borderWidth = 0.02f;
     public float cellSize = 1f;
+    public bool showBorder = false; // Disable borders by default
 
     private void Awake()
     {
@@ -17,9 +18,11 @@ public class GridCellBorder : MonoBehaviour
 
     private void CreateBorder()
     {
+        if (!showBorder) return; // Skip border creation if disabled
+
         // Add LineRenderer for border
         lineRenderer = gameObject.AddComponent<LineRenderer>();
-        
+
         // Configure LineRenderer
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = borderColor;

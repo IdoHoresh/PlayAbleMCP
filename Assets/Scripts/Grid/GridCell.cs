@@ -9,9 +9,9 @@ public class GridCell : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     
     [Header("Visual Settings")]
-    public Color normalColor = new Color(1f, 1f, 1f, 0.3f);
-    public Color highlightColor = new Color(0f, 1f, 0f, 0.5f);
-    public Color invalidColor = new Color(1f, 0f, 0f, 0.5f);
+    public Color normalColor = new Color(0.93f, 0.76f, 0.6f, 0.8f); // Peachy tan color
+    public Color highlightColor = new Color(1f, 0.9f, 0.7f, 0.9f); // Lighter peach for valid placement
+    public Color invalidColor = new Color(1f, 0.6f, 0.5f, 0.8f); // Reddish peach for invalid
 
     private void Awake()
     {
