@@ -163,3 +163,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickupScale: 1.53
   scaleSpeed: 8
+  snapDuration: 0.3

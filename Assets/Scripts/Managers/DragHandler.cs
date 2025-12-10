@@ -124,18 +124,31 @@ public class DragHandler : MonoBehaviour
             // Otherwise try to place in empty cell
             else if (targetItem == null)
             {
-                gridManager.PlaceItem(draggedItem, targetGridPos);
-                draggedItem.transform.position = new Vector3(
-                    draggedItem.transform.position.x,
-                    draggedItem.transform.position.y,
-                    0f
-                );
+                // Save current position before PlaceItem moves it
+                Vector3 currentDraggedPosition = draggedItem.transform.position;
+                Debug.Log($"[DRAG DEBUG] Saved dragged position: {currentDraggedPosition}");
 
-                // Apply place visual effect
+                gridManager.PlaceItem(draggedItem, targetGridPos);
+
+                // Get target world position
+                Vector2 targetWorldPos = gridManager.GridToWorldPosition(targetGridPos.x, targetGridPos.y);
+                Vector3 finalPosition = new Vector3(targetWorldPos.x, targetWorldPos.y, 0f);
+                Debug.Log($"[DRAG DEBUG] Target grid position: {finalPosition}");
+
+                // Apply place visual effect with snap animation
                 ItemVisualEffects effects = draggedItem.GetComponent<ItemVisualEffects>();
                 if (effects != null)
                 {
+                    // Move back to dragged position, then animate to final position
+                    draggedItem.transform.position = currentDraggedPosition;
+                    Debug.Log($"[DRAG DEBUG] Moved item back to: {draggedItem.transform.position}");
                     effects.OnPlace();
+                    effects.PlaySnapToGridAnimation(finalPosition);
+                }
+                else
+                {
+                    // Fallback if no effects component
+                    draggedItem.transform.position = finalPosition;
                 }
 
                 placed = true;
@@ -146,18 +159,28 @@ public class DragHandler : MonoBehaviour
         // If couldn't place, return to original position
         if (!placed)
         {
-            gridManager.PlaceItem(draggedItem, originalGridPosition);
-            draggedItem.transform.position = new Vector3(
-                draggedItem.transform.position.x,
-                draggedItem.transform.position.y,
-                0f
-            );
+            // Save current position before PlaceItem moves it
+            Vector3 currentDraggedPosition = draggedItem.transform.position;
 
-            // Apply place visual effect
+            gridManager.PlaceItem(draggedItem, originalGridPosition);
+
+            // Get original world position
+            Vector2 originalWorldPos = gridManager.GridToWorldPosition(originalGridPosition.x, originalGridPosition.y);
+            Vector3 finalPosition = new Vector3(originalWorldPos.x, originalWorldPos.y, 0f);
+
+            // Apply place visual effect with snap animation
             ItemVisualEffects effects = draggedItem.GetComponent<ItemVisualEffects>();
             if (effects != null)
             {
+                // Move back to dragged position, then animate to final position
+                draggedItem.transform.position = currentDraggedPosition;
                 effects.OnPlace();
+                effects.PlaySnapToGridAnimation(finalPosition);
+            }
+            else
+            {
+                // Fallback if no effects component
+                draggedItem.transform.position = finalPosition;
             }
 
             Debug.Log($"Returned item to {originalGridPosition}");

@@ -8,6 +8,9 @@ public class ItemVisualEffects : MonoBehaviour
     [Header("Scale Settings")]
     public float pickupScale = 1.2f;
     public float scaleSpeed = 8f;
+
+    [Header("Snap Animation Settings")]
+    public float snapDuration = 0.2f;
     
     private bool isPickedUp = false;
     private Vector3 targetScale;
@@ -70,6 +73,36 @@ public class ItemVisualEffects : MonoBehaviour
     {
         // Pop in effect
         StartCoroutine(SpawnScaleEffect());
+    }
+
+    public void PlaySnapToGridAnimation(Vector3 targetPosition)
+    {
+        StartCoroutine(SnapToGridCoroutine(targetPosition));
+    }
+
+    private System.Collections.IEnumerator SnapToGridCoroutine(Vector3 targetPosition)
+    {
+        Vector3 startPosition = itemTransform.position;
+        float distance = Vector3.Distance(startPosition, targetPosition);
+
+        Debug.Log($"[SNAP ANIMATION] Starting snap animation. Distance: {distance:F3}, Duration: {snapDuration}s");
+        Debug.Log($"[SNAP ANIMATION] Start: {startPosition}, Target: {targetPosition}");
+
+        float elapsed = 0f;
+
+        while (elapsed < snapDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / snapDuration;
+            // Ease out quad: starts fast, slows at end
+            float eased = 1f - (1f - t) * (1f - t);
+
+            itemTransform.position = Vector3.Lerp(startPosition, targetPosition, eased);
+            yield return null;
+        }
+
+        itemTransform.position = targetPosition; // Ensure exact final position
+        Debug.Log($"[SNAP ANIMATION] Snap animation complete");
     }
 
     private System.Collections.IEnumerator SpawnScaleEffect()
