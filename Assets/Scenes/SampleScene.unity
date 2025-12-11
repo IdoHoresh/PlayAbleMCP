@@ -208,7 +208,7 @@ MonoBehaviour:
   gridHeight: 6
   cellSize: 1.05
   cellPrefab: {fileID: 7901485657203549882, guid: 97891720f85d37f439a77f6af69f900c, type: 3}
-  gridOffset: {x: 0, y: 0}
+  gridOffset: {x: 0, y: -0.5}
 --- !u!4 &39096258
 Transform:
   m_ObjectHideFlags: 0
@@ -234,8 +234,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4271b17d5d79f99489f3c30dffc09018, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   gridManager: {fileID: 39096257}
   coinWallet: {fileID: 0}
   orderSlots: []
@@ -253,8 +253,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84ffd2241245da44881a5050d66e7ceb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   orderManager: {fileID: 39096259}
   gridManager: {fileID: 39096257}
   orders:

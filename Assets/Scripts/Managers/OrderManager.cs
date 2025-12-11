@@ -15,28 +15,50 @@ public class OrderManager : MonoBehaviour
     private List<OrderData> activeOrders = new List<OrderData>();
     private bool initialized = false;
 
+    private void Awake()
+    {
+        Debug.Log("OrderManager: Awake called");
+    }
+
     private void Start()
     {
+        Debug.Log("OrderManager: Start called, scheduling initialization...");
         // Wait one frame to ensure UISetup has completed
         Invoke(nameof(InitializeOrders), 0.1f);
     }
 
     private void InitializeOrders()
     {
+        Debug.Log("OrderManager: InitializeOrders called");
+
         if (initialized) return;
 
         // Check if everything is ready
         if (orderSlots == null || orderSlots.Length == 0)
         {
-            Debug.LogWarning("OrderManager: Order slots not set up yet!");
+            Debug.LogError($"OrderManager: Order slots not set up! orderSlots = {(orderSlots == null ? "null" : $"array of {orderSlots.Length}")}");
             return;
         }
 
         if (availableOrders == null || availableOrders.Length == 0)
         {
-            Debug.LogWarning("OrderManager: No orders available!");
+            Debug.LogError($"OrderManager: No orders available! availableOrders = {(availableOrders == null ? "null" : $"array of {availableOrders.Length}")}");
             return;
         }
+
+        if (gridManager == null)
+        {
+            Debug.LogError("OrderManager: gridManager is null!");
+            return;
+        }
+
+        if (coinWallet == null)
+        {
+            Debug.LogError("OrderManager: coinWallet is null!");
+            return;
+        }
+
+        Debug.Log($"OrderManager: All references validated. Creating {Mathf.Min(orderSlots.Length, availableOrders.Length)} orders...");
 
         // Create initial orders
         for (int i = 0; i < Mathf.Min(orderSlots.Length, availableOrders.Length); i++)

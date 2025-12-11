@@ -23,9 +23,19 @@ public class OrderSlot : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log($"OrderSlot: Awake called. button is {(button == null ? "NULL" : "assigned")}");
+    }
+
+    public void SetupButton()
+    {
         if (button != null)
         {
             button.onClick.AddListener(OnOrderClicked);
+            Debug.Log($"OrderSlot: Added click listener to button. Button is interactable: {button.interactable}");
+        }
+        else
+        {
+            Debug.LogError("OrderSlot: Button is NULL in SetupButton!");
         }
     }
 
@@ -82,14 +92,27 @@ public class OrderSlot : MonoBehaviour
 
     private void OnOrderClicked()
     {
+        Debug.Log($"OrderSlot: OnOrderClicked called! isAvailable={isAvailable}, currentOrder={currentOrder?.name ?? "null"}");
+
         if (isAvailable && currentOrder != null)
         {
             // Notify the OrderManager
             OrderManager orderManager = FindFirstObjectByType<OrderManager>();
+            Debug.Log($"OrderSlot: Found OrderManager: {orderManager != null}");
+
             if (orderManager != null)
             {
+                Debug.Log($"OrderSlot: Calling CompleteOrder for {currentOrder.name}");
                 orderManager.CompleteOrder(this);
             }
+            else
+            {
+                Debug.LogError("OrderSlot: OrderManager not found!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"OrderSlot: Cannot complete - isAvailable={isAvailable}, hasOrder={currentOrder != null}");
         }
     }
 

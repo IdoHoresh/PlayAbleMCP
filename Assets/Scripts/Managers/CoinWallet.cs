@@ -9,7 +9,7 @@ public class CoinWallet : MonoBehaviour
     public RectTransform walletIcon;
 
     [Header("Animation Settings")]
-    public float coinFlyDuration = 0.8f;
+    public float coinFlyDuration = 1.5f;
     public AnimationCurve coinFlyCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     private int currentCoins = 0;
@@ -50,8 +50,9 @@ public class CoinWallet : MonoBehaviour
         RectTransform coinRect = coinFlyObj.AddComponent<RectTransform>();
         UnityEngine.UI.Image coinImage = coinFlyObj.AddComponent<UnityEngine.UI.Image>();
 
-        // Set up the coin visual (you can set a sprite here)
-        coinRect.sizeDelta = new Vector2(50, 50);
+        // Set up the coin visual - make it bigger and golden like a coin
+        coinRect.sizeDelta = new Vector2(100, 100);
+        coinImage.color = new Color(1f, 0.84f, 0f); // Gold color
 
         // Convert world position to screen position
         Canvas canvas = GetComponentInParent<Canvas>();

@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour
     public GameObject cellPrefab;
 
     [Header("Grid Offset")]
-    public Vector2 gridOffset = Vector2.zero;
+    public Vector2 gridOffset = new Vector2(0, -0.5f); // Moved down to avoid overlap with orders panel
 
     private GridCell[,] grid;
 

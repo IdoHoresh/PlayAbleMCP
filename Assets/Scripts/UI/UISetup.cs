@@ -17,20 +17,25 @@ public class UISetup : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("UISetup: Awake called, starting UI setup...");
         SetupUI();
     }
 
     private void SetupUI()
     {
+        Debug.Log($"UISetup: SetupUI starting. orderManager = {(orderManager == null ? "null" : "assigned")}, gridManager = {(gridManager == null ? "null" : "assigned")}, orders count = {(orders == null ? "null" : orders.Length.ToString())}");
+
         // Create Canvas
         canvas = CreateCanvas();
+        Debug.Log("UISetup: Canvas created");
 
-        // Create Orders Panel at top
+        // Create Orders Panel at top of screen
         GameObject ordersPanel = CreateOrdersPanel(canvas.transform);
 
         // Create Coin Wallet on right
         GameObject walletObj = CreateCoinWallet(canvas.transform);
         coinWallet = walletObj.GetComponent<CoinWallet>();
+        Debug.Log($"UISetup: Orders panel and wallet created. orderSlots count = {orderSlots.Length}");
 
         // Setup OrderManager references
         if (orderManager != null)
@@ -39,7 +44,14 @@ public class UISetup : MonoBehaviour
             orderManager.coinWallet = coinWallet;
             orderManager.orderSlots = orderSlots;
             orderManager.availableOrders = orders;
+            Debug.Log($"UISetup: OrderManager references set - gridManager: {(orderManager.gridManager != null ? "set" : "null")}, coinWallet: {(orderManager.coinWallet != null ? "set" : "null")}, orderSlots: {orderManager.orderSlots.Length}, orders: {orderManager.availableOrders.Length}");
         }
+        else
+        {
+            Debug.LogError("UISetup: orderManager is NULL! Cannot assign references.");
+        }
+
+        Debug.Log("UISetup: Setup complete");
     }
 
     private Canvas CreateCanvas()
@@ -56,7 +68,34 @@ public class UISetup : MonoBehaviour
 
         canvasObj.AddComponent<GraphicRaycaster>();
 
+        // Create EventSystem if it doesn't exist
+        if (UnityEngine.EventSystems.EventSystem.current == null)
+        {
+            GameObject eventSystemObj = new GameObject("EventSystem");
+            eventSystemObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystemObj.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+        }
+
         return canv;
+    }
+
+    private Vector2 CalculateGridTopCenter()
+    {
+        if (gridManager == null)
+        {
+            Debug.LogWarning("UISetup: GridManager is null, using default position");
+            return new Vector2(0, 2f); // Fallback position
+        }
+
+        // Calculate the top center of the grid in world space
+        float gridWidth = gridManager.gridWidth * gridManager.cellSize;
+        float gridHeight = gridManager.gridHeight * gridManager.cellSize;
+
+        // Grid is centered around gridOffset, so top is gridOffset.y + (gridHeight / 2)
+        float topY = gridManager.gridOffset.y + (gridHeight / 2f);
+        float centerX = gridManager.gridOffset.x;
+
+        return new Vector2(centerX, topY);
     }
 
     private GameObject CreateOrdersPanel(Transform parent)
@@ -66,11 +105,17 @@ public class UISetup : MonoBehaviour
         panel.transform.SetParent(parent, false);
 
         RectTransform panelRect = panel.AddComponent<RectTransform>();
+
+        // Anchor to top-center of screen
         panelRect.anchorMin = new Vector2(0.5f, 1f);
         panelRect.anchorMax = new Vector2(0.5f, 1f);
-        panelRect.pivot = new Vector2(0.5f, 1f);
-        panelRect.anchoredPosition = new Vector2(0, -50);
+        panelRect.pivot = new Vector2(0.5f, 1f); // Pivot at top center of panel
+
+        // Position at top of screen with small margin
+        panelRect.anchoredPosition = new Vector2(0, -20); // 20 pixels down from top
         panelRect.sizeDelta = new Vector2(950, 160);
+
+        Debug.Log($"UISetup: Orders panel positioned at top of screen: {panelRect.anchoredPosition}");
 
         Image panelBg = panel.AddComponent<Image>();
         panelBg.color = new Color(1f, 1f, 1f, 0.05f);
@@ -106,8 +151,11 @@ public class UISetup : MonoBehaviour
         Image slotBg = slotObj.AddComponent<Image>();
         slotBg.color = new Color(1f, 0.9f, 0.8f, 0.5f);
         slotBg.sprite = CreateRoundedSprite();
+        slotBg.raycastTarget = true; // Ensure the image can receive raycasts
 
         Button button = slotObj.AddComponent<Button>();
+        button.targetGraphic = slotBg; // Set the background image as the button's target graphic
+        button.interactable = true; // Explicitly set button as interactable
 
         // Create item icon
         GameObject iconObj = new GameObject("ItemIcon");
@@ -143,6 +191,11 @@ public class UISetup : MonoBehaviour
         orderSlot.coinRewardText = coinText;
         orderSlot.backgroundImage = slotBg;
         orderSlot.button = button;
+
+        // Manually add the click listener since Awake already ran before we assigned the button
+        orderSlot.SetupButton();
+
+        Debug.Log($"UISetup: Created OrderSlot. Button assigned: {button != null}, Button interactable: {button.interactable}");
 
         return orderSlot;
     }
