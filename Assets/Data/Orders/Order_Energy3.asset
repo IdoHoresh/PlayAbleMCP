@@ -16,3 +16,9 @@ MonoBehaviour:
   quantity: 1
   coinReward: 100
   itemIcon: {fileID: 21300000, guid: 2923973c68f70e349a336b8e4326e785, type: 3}
+  itemType: 1
+  itemPrefab3D: {fileID: 4747324039118741618, guid: 78dc1306e64d80049b7d0bceb69b1c56, type: 3}
+  equipmentSlot: 1
+  equipmentPositionOffset: {x: 0, y: 0, z: 0.05}
+  equipmentRotationOffset: {x: -90, y: 0, z: 0}
+  equipmentScale: {x: 30, y: 30, z: 30}

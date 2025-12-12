@@ -8,6 +8,7 @@ public class OrderManager : MonoBehaviour
     public GridManager gridManager;
     public CoinWallet coinWallet;
     public OrderSlot[] orderSlots;
+    public ItemDeliveryAnimator itemDeliveryAnimator;
 
     [Header("Orders")]
     public OrderData[] availableOrders;
@@ -134,9 +135,25 @@ public class OrderManager : MonoBehaviour
         // Find and remove the required items from the grid
         RemoveItemsFromGrid(order.requiredItem, order.quantity);
 
-        // Give coin reward with animation
-        Vector3 orderWorldPos = slot.GetWorldPosition();
-        coinWallet.AddCoins(order.coinReward, orderWorldPos);
+        // Animate item delivery to character (if item delivery animator exists)
+        if (itemDeliveryAnimator != null && order.itemType != ItemType.None)
+        {
+            itemDeliveryAnimator.DeliverItem(slot, order, () =>
+            {
+                // After item is delivered, give coin reward
+                Vector3 orderWorldPos = slot.GetWorldPosition();
+                coinWallet.AddCoins(order.coinReward, orderWorldPos);
+
+                Debug.Log($"Order completed! Delivered {order.itemType} to character and earned {order.coinReward} coins!");
+            });
+        }
+        else
+        {
+            // Fallback: Just give coin reward (no item delivery)
+            Vector3 orderWorldPos = slot.GetWorldPosition();
+            coinWallet.AddCoins(order.coinReward, orderWorldPos);
+            Debug.Log($"Order completed! Earned {order.coinReward} coins!");
+        }
 
         // Remove this order and potentially add a new one
         int slotIndex = System.Array.IndexOf(orderSlots, slot);
@@ -146,7 +163,6 @@ public class OrderManager : MonoBehaviour
             slot.SetOrder(null);
 
             // You could add logic here to spawn a new random order
-            Debug.Log($"Order completed! Earned {order.coinReward} coins!");
         }
 
         CheckOrderAvailability();
