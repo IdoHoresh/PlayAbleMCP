@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[ExecuteInEditMode]
 public class GridManager : MonoBehaviour
 {
     [Header("Grid Settings")]

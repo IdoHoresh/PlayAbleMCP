@@ -7,7 +7,6 @@ public class UISetup : MonoBehaviour
     [Header("References")]
     public OrderManager orderManager;
     public GridManager gridManager;
-    public CharacterViewController characterViewController;
 
     [Header("Order Data")]
     public OrderData[] orders;
@@ -15,8 +14,6 @@ public class UISetup : MonoBehaviour
     private Canvas canvas;
     private CoinWallet coinWallet;
     private OrderSlot[] orderSlots;
-    private ScreenLayoutManager layoutManager;
-    private ItemDeliveryAnimator itemDeliveryAnimator;
 
     private void Awake()
     {
@@ -32,12 +29,6 @@ public class UISetup : MonoBehaviour
         canvas = CreateCanvas();
         Debug.Log("UISetup: Canvas created");
 
-        // Create ScreenLayoutManager
-        GameObject layoutObj = new GameObject("ScreenLayoutManager");
-        layoutObj.transform.SetParent(transform);
-        layoutManager = layoutObj.AddComponent<ScreenLayoutManager>();
-        Debug.Log("UISetup: ScreenLayoutManager created");
-
         // Create Orders Panel at top of screen
         GameObject ordersPanel = CreateOrdersPanel(canvas.transform);
 
@@ -46,14 +37,6 @@ public class UISetup : MonoBehaviour
         coinWallet = walletObj.GetComponent<CoinWallet>();
         Debug.Log($"UISetup: Orders panel and wallet created. orderSlots count = {orderSlots.Length}");
 
-        // Create ItemDeliveryAnimator
-        GameObject animatorObj = new GameObject("ItemDeliveryAnimator");
-        animatorObj.transform.SetParent(transform);
-        itemDeliveryAnimator = animatorObj.AddComponent<ItemDeliveryAnimator>();
-        itemDeliveryAnimator.characterViewController = characterViewController;
-        itemDeliveryAnimator.canvas = canvas;
-        Debug.Log("UISetup: ItemDeliveryAnimator created");
-
         // Setup OrderManager references
         if (orderManager != null)
         {
@@ -61,7 +44,6 @@ public class UISetup : MonoBehaviour
             orderManager.coinWallet = coinWallet;
             orderManager.orderSlots = orderSlots;
             orderManager.availableOrders = orders;
-            orderManager.itemDeliveryAnimator = itemDeliveryAnimator;
             Debug.Log($"UISetup: OrderManager references set - gridManager: {(orderManager.gridManager != null ? "set" : "null")}, coinWallet: {(orderManager.coinWallet != null ? "set" : "null")}, orderSlots: {orderManager.orderSlots.Length}, orders: {orderManager.availableOrders.Length}");
         }
         else
